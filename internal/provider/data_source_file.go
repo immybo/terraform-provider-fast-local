@@ -9,6 +9,7 @@ package provider
 import (
 	"context"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -100,8 +101,14 @@ func createOrUpdateSingleFile(file *fileModel, osLineEnding string, addNewlineAt
 	}
 	fileBytes := []byte(editedContents)
 
+	err := os.MkdirAll(filepath.Dir(file.Filename.ValueString()), 0644)
+	if err != nil {
+		diag.AddError("Failed to create containing folder for file.", err.Error())
+		return
+	}
+
 	// Just overwrite anything existing - likely to be faster than checking if it exists and matches the content
-	err := os.WriteFile(file.Filename.ValueString(), fileBytes, 0644)
+	err = os.WriteFile(file.Filename.ValueString(), fileBytes, 0644)
 	if err != nil {
 		diag.AddError("Failed to write file.", err.Error())
 		return
