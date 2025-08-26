@@ -101,7 +101,7 @@ func createOrUpdateSingleFile(file *fileModel, osLineEnding string, addNewlineAt
 	}
 	fileBytes := []byte(editedContents)
 
-	err := os.MkdirAll(filepath.Dir(file.Filename.ValueString()), 0644)
+	err := os.MkdirAll(filepath.Dir(file.Filename.ValueString()), 0755)
 	if err != nil {
 		diag.AddError("Failed to create containing folder for file.", err.Error())
 		return
